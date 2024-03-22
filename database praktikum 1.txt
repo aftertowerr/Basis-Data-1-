@@ -1,0 +1,119 @@
+database praktikum 1
+
+# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 8
+Server version: 10.4.28-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> USE dbkuliah
+Database changed
+MariaDB [dbkuliah]> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| dbkuliah           |
+| dbti02             |
+| information_schema |
+| mysql              |
+| performance_schema |
+| phpmyadmin         |
+| test               |
++--------------------+
+7 rows in set (0.026 sec)
+
+MariaDB [dbkuliah]> SHOW TABLES;
++--------------------+
+| Tables_in_dbkuliah |
++--------------------+
+| jurusan            |
++--------------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbkuliah]> CREATE TABLE mahasiswa(
+    -> id int primary key auto_increment not null,
+    -> nim int(15) not null unique,
+    -> nama varchar(40) not null,
+    -> alamat varchar(50) not null,
+    -> idjurusan int not null references jurusan(id),
+    -> foto varchar(30) not null);
+Query OK, 0 rows affected (0.045 sec)
+
+MariaDB [dbkuliah]> SHOW TABLES;
++--------------------+
+| Tables_in_dbkuliah |
++--------------------+
+| jurusan            |
+| mahasiswa          |
++--------------------+
+2 rows in set (0.002 sec)
+
+MariaDB [dbkuliah]> DESC mahasiswa;
++-----------+-------------+------+-----+---------+----------------+
+| Field     | Type        | Null | Key | Default | Extra          |
++-----------+-------------+------+-----+---------+----------------+
+| id        | int(11)     | NO   | PRI | NULL    | auto_increment |
+| nim       | int(15)     | NO   | UNI | NULL    |                |
+| nama      | varchar(40) | NO   |     | NULL    |                |
+| alamat    | varchar(50) | NO   |     | NULL    |                |
+| idjurusan | int(11)     | NO   |     | NULL    |                |
+| foto      | varchar(30) | NO   |     | NULL    |                |
++-----------+-------------+------+-----+---------+----------------+
+6 rows in set (0.023 sec)
+
+MariaDB [dbkuliah]> DESC jurusan;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int(11)     | NO   | PRI | NULL    | auto_increment |
+| nama  | varchar(40) | NO   | UNI | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+2 rows in set (0.040 sec)
+
+MariaDB [dbkuliah]> INSERT INTO jurusan (nama) VALUES
+    -> ('Teknik Informatika'),
+    -> ('Sistem Informasi'),
+    -> ('Bisnis Digital'),
+    -> ('Studi Ilmu Komputer'),
+    -> ('Doktor Ilmu Komputer');
+Query OK, 5 rows affected (0.054 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [dbkuliah]> select * from jurusan;
++----+----------------------+
+| id | nama                 |
++----+----------------------+
+|  3 | Bisnis Digital       |
+|  5 | Doktor Ilmu Komputer |
+|  2 | Sistem Informasi     |
+|  4 | Studi Ilmu Komputer  |
+|  1 | Teknik Informatika   |
++----+----------------------+
+5 rows in set (0.001 sec)
+
+MariaDB [dbkuliah]> INSERT INTO mahasiswa (nim,nama,alamat,idjurusan,foto) VALUES
+    -> (0110223059,'Najwa','Bogor',1,'najwa.jpg'),
+    -> (0110223069,'Farida','Citayam',5,'farida.jpg'),
+    -> (0110225678,'Haechan','Bandung',3,'haechan.jpg'),
+    -> (0110227890,'Jaehyun','Palembang',2,'jaehyun.jpg'),
+    -> (0110227634,'Chanyeol','Banten',4,'chanyeol.jpg');
+Query OK, 5 rows affected (0.006 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [dbkuliah]> select * from mahasiswa;
++----+-----------+----------+-----------+-----------+--------------+
+| id | nim       | nama     | alamat    | idjurusan | foto         |
++----+-----------+----------+-----------+-----------+--------------+
+|  1 | 110223059 | Najwa    | Bogor     |         1 | najwa.jpg    |
+|  2 | 110223069 | Farida   | Citayam   |         5 | farida.jpg   |
+|  3 | 110225678 | Haechan  | Bandung   |         3 | haechan.jpg  |
+|  4 | 110227890 | Jaehyun  | Palembang |         2 | jaehyun.jpg  |
+|  5 | 110227634 | Chanyeol | Banten    |         4 | chanyeol.jpg |
++----+-----------+----------+-----------+-----------+--------------+
+5 rows in set (0.001 sec)
+
+MariaDB [dbkuliah]>
