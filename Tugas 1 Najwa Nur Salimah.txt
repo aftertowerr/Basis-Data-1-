@@ -1,0 +1,887 @@
+Tugas 1 Najwa Nur Salimah
+
+
+Setting environment for using XAMPP for Windows.
+Najwa@LAPTOP-EOML93AH c:\xampp
+# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 8
+Server version: 10.4.28-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| dbkuliah           |
+| dbpuskesmas        |
+| dbti02             |
+| information_schema |
+| mysql              |
+| performance_schema |
+| phpmyadmin         |
+| test               |
++--------------------+
+8 rows in set (0.036 sec)
+
+
+- No 1 = Buatlah database baru dengan nama: dbpegawai 
+
+MariaDB [(none)]> CREATE DATABASE dbpegawai;
+Query OK, 1 row affected (0.002 sec)
+
+
+- No 2 = Masuk ke dbpegawai dengan perintah USE
+
+MariaDB [(none)]> USE dbpegawai;
+Database changed
+
+- No 3 = Buatlah tabel baru dengan nama: divisi, dengan kolom-kolom sbb:
+id int primary key auto_increment
+nama varchar(30) dengan contraint: wajib diisi dan tidak boleh sama
+
+MariaDB [dbpegawai]> CREATE TABLE divisi (
+    -> id INT PRIMARY KEY AUTO_INCREMENT,
+    -> nama VARCHAR(30) NOT NULL UNIQUE);
+Query OK, 0 rows affected (0.036 sec)
+
+- No 4 = Tampilkan deskripsi tabel divisi 
+
+MariaDB [dbpegawai]> DESC divisi;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int(11)     | NO   | PRI | NULL    | auto_increment |
+| nama  | varchar(30) | NO   | UNI | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+2 rows in set (0.021 sec)
+
+- No 5 = Buatlah tabel baru dengan nama: jabatan, dengan kolom-kolom sbb:
+id int primary key auto_increment
+nama varchar(30) dengan contraint: wajib diisi dan tidak boleh sama
+
+MariaDB [dbpegawai]> CREATE TABLE jabatan (
+    -> id INT PRIMARY KEY AUTO_INCREMENT,
+    -> nama VARCHAR(30) NOT NULL UNIQUE);
+Query OK, 0 rows affected (0.032 sec)
+
+- No 6 = Tampilkan deskripsi tabel jabatan
+
+MariaDB [dbpegawai]> DESC jabatan;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int(11)     | NO   | PRI | NULL    | auto_increment |
+| nama  | varchar(30) | NO   | UNI | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+2 rows in set (0.023 sec)
+
+- No 7 = Buatlah tabel baru dengan nama: pegawai, dengan kolom-kolom sbb:
+id int primary key auto_increment
+nip char dengan constraint: wajib diisi, tidak boleh sama & 5 karakter
+nama varchar dengan constraint: wajib diisi dan maksimal 30 karakter
+gender enum('Laki-Laki','Perempuan') dengan constraint: wajib diisi
+tmp_lahir varchar dengan constraint: wajib diisi dan maksimal 30 karakter
+tgl_lahir date dengan constraint: wajib diisi
+iddivisi int sebagai foreign key, tidak boleh kosong, merujuk ke tabel divisi ke field id
+idjabatan int sebagai foreign key, tidak boleh kosong, merujuk ke tabel jabatan ke field id
+alamat text
+
+MariaDB [dbpegawai]> CREATE TABLE pegawai (
+    -> id INT PRIMARY KEY AUTO_INCREMENT,
+    -> nip CHAR(5) NOT NULL UNIQUE,
+    -> nama VARCHAR(30) NOT NULL,
+    -> gender ENUM('Laki-laki','Perempuan') NOT NULL,
+    -> tmp_lahir varchar(30) NOT NULL,
+    -> tgl_lahir DATE NOT NULL,
+    -> iddivisi INT NOT NULL,
+    -> idjabatan INT NOT NULL,
+    -> alamat TEXT,
+    -> FOREIGN KEY (iddivisi) REFERENCES divisi(id),
+    -> FOREIGN KEY (idjabatan) REFERENCES jabatan(id));
+Query OK, 0 rows affected (0.042 sec)
+
+- No 8 =Tampilkan deskripsi tabel pegawai 
+
+MariaDB [dbpegawai]> DESC pegawai;
++-----------+-------------------------------+------+-----+---------+----------------+
+| Field     | Type                          | Null | Key | Default | Extra          |
++-----------+-------------------------------+------+-----+---------+----------------+
+| id        | int(11)                       | NO   | PRI | NULL    | auto_increment |
+| nip       | char(5)                       | NO   | UNI | NULL    |                |
+| nama      | varchar(30)                   | NO   |     | NULL    |                |
+| gender    | enum('Laki-laki','Perempuan') | NO   |     | NULL    |                |
+| tmp_lahir | varchar(30)                   | NO   |     | NULL    |                |
+| tgl_lahir | date                          | NO   |     | NULL    |                |
+| iddivisi  | int(11)                       | NO   | MUL | NULL    |                |
+| idjabatan | int(11)                       | NO   | MUL | NULL    |                |
+| alamat    | text                          | YES  |     | NULL    |                |
++-----------+-------------------------------+------+-----+---------+----------------+
+9 rows in set (0.025 sec)
+
+- No 9 = Tampilkan tabel-tabel yang ada di dbpegawai
+
+MariaDB [dbpegawai]> SHOW TABLES;
++---------------------+
+| Tables_in_dbpegawai |
++---------------------+
+| divisi              |
+| jabatan             |
+| pegawai             |
++---------------------+
+3 rows in set (0.001 sec)
+
+- No 10 Input data divisi => SDM, Keuangan, Marketing, IT
+
+MariaDB [dbpegawai]> INSERT INTO divisi (nama) VALUES
+    -> ('SDM'),
+    -> ('Keuangan'),
+    -> ('Marketing'),
+    -> ('IT');
+Query OK, 4 rows affected (0.048 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+- No 11 = Tampilkan seluruh data divisi
+
+MariaDB [dbpegawai]> SELECT * FROM divisi;
++----+-----------+
+| id | nama      |
++----+-----------+
+|  4 | IT        |
+|  2 | Keuangan  |
+|  3 | Marketing |
+|  1 | SDM       |
++----+-----------+
+4 rows in set (0.001 sec)
+
+- No 12 = Input data jabatan => Direktur, Manajer, Asisten Manajer, Staff
+
+MariaDB [dbpegawai]> INSERT INTO jabatan (nama) VALUES
+    -> ('Direktur'),
+    -> ('Manajer'),
+    -> ('Asisten Mnajer'),
+    -> ('Staff');
+Query OK, 4 rows affected (0.005 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+- No 13 = MariaDB [dbpegawai]> SELECT * FROM jabatan;
+
+MariaDB [dbpegawai]> SELECT * FROM jabatan;
++----+----------------+
+| id | nama           |
++----+----------------+
+|  3 | Asisten Mnajer |
+|  1 | Direktur       |
+|  2 | Manajer        |
+|  4 | Staff          |
++----+----------------+
+4 rows in set (0.001 sec)
+
+- No 14 = Input 20 orang pegawai ( 1 divisi 5 orang, untuk gender dan jabatan diacak)
+
+MariaDB [dbpegawai]> INSERT INTO pegawai (nip, nama, gender, tmp_lahir, tgl_lahir, iddivisi, idjabatan, alamat) VALUES
+    -> ('00001', 'Muhammad', 'Laki-laki', 'Surakarta', '17-6-1989', 1, 1, 'Jl. Tegalega'),
+    -> ('00002', 'Ani', 'Perempuan', 'Aceh', '6-12-1980', 1, 1, Jl. Hasibuan );
+ERROR 1054 (42S22): Unknown column 'Jl.Hasibuan' in 'field list'
+MariaDB [dbpegawai]> INSERT INTO pegawai (nip, nama, gender, tmp_lahir, tgl_lahir, iddivisi, idjabatan, alamat) VALUES
+    -> ('00001', 'Muhammad', 'Laki-laki', 'Surakarta', '1987-01-15', 1, 1, 'Jl. Tegalega'),
+    -> ('00002', 'Ani', 'Perempuan', 'Aceh', '1980-02-25', 1, 1,
+ 'Jl. Hasibuan'),
+    -> ('00003', 'Riska', 'Perempuan', 'Yogyakarta', '1990-11-27', 1, 3, 'Jl. Gili');
+Query OK, 3 rows affected (0.005 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+----------+-----------+------------+------------+----------+-----------+--------------+
+| id | nip   | nama     | gender    | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat       |
++----+-------+----------+-----------+------------+------------+----------+-----------+--------------+
+|  1 | 00001 | Muhammad | Laki-laki | Surakarta  | 1987-01-15 |        1 |         1 | Jl. Tegalega |
+|  2 | 00002 | Ani      | Perempuan | Aceh       | 1980-02-25 |        1 |         1 | Jl. Hasibuan |
+|  3 | 00003 | Riska    | Perempuan | Yogyakarta | 1990-11-27 |        1 |         3 | Jl. Gili     |
++----+-------+----------+-----------+------------+------------+----------+-----------+--------------+
+3 rows in set (0.001 sec)
+
+MariaDB [dbpegawai]> INSERT INTO pegawai (nip, nama, gender, tmp_lahir, tgl_lahir, iddivisi, idjabatan, alamat) VALUES
+    -> ('00005', 'Asih', 'Perempuan', 'Bogor', '1999-10-22', 1, 2, 'Jl. Sudirman'),
+    -> ('00006', 'Runi', 'Perempuan', 'Bogor', '1999-08-17', 2, 1, 'Jl. Bayam'),
+    -> ('00007', 'Kirana', 'Perempuan', 'Jakarta', '2000-08-11', 2, 2, 'Jl. Baru'),
+    -> ('00008', 'Santoso', 'Laki-laki', 'Solo', '1988-11-17', 2, 3, 'Jl. Anggrek'),
+    -> ('00009', 'Agusalim', 'Laki-laki', 'Garut', '1975-02-09', 2, 4, 'Jl. Anggrek'),
+    -> ('00010', 'Anto', 'Laki-laki', 'Tangerang', '1998-07-29', 2, 1, 'Jl. Sosial'),
+    -> ('00011', 'Asep', 'Laki-laki', 'Nagrek', '1976-12-30', 3, 1, 'Jl. Monalisa'),
+    -> ('00012', 'Andini', 'Perempuan', 'Parung', '1995-04-20', 3, 3, 'Jl. Apung'),
+    -> ('00013', 'Ancika', 'Perempuan', 'Bandung', '1782-05-11', 3, 4, 'Jl. Siliwangi'),
+    -> ('00014', 'Firman', 'Laki-laki', 'Kutai', '189-08-16', 3, 4, 'Jl. Antapani'),
+    -> ('00015', 'Arhan', 'Laki-laki', 'Boyolali', '1899-07-16', 3, 2, 'Jl. Antariksa'),
+    -> ('00016', 'Haris', 'Laki-laki', 'India', '1897-04-12', 4, 1, 'Jl. Cikeas'),
+    -> ('00017', 'Duni', 'Laki-laki', 'Tasik', '1968-07-19', 4, 2, 'Jl. Amin'),
+    -> ('00018', 'Riska', 'Perempuam', 'Wonosobo', '1974-10-29', 4, 3, 'Jl. Badru'),
+    -> ('00019', 'Najma', 'Perempuam', 'Boyolali', '1974-02-31', 4, 4, 'Jl. Manokwari'),
+    -> ('00020', 'Minul', 'Perempuam', 'Bima', '2001-02-24', 4, 4, 'Jl. Tajmahal');
+Query OK, 16 rows affected, 4 warnings (0.008 sec)
+Records: 16  Duplicates: 0  Warnings: 4
+
+- No 15 = Tampilkan seluruh data pegawai 
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+
+| id | nip   | nama     | gender    | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat        |
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+
+|  1 | 00001 | Muhammad | Laki-laki | Surakarta  | 1987-01-15 |        1 |         1 | Jl. Tegalega  |
+|  2 | 00002 | Ani      | Perempuan | Aceh       | 1980-02-25 |        1 |         1 | Jl. Hasibuan  |
+|  3 | 00003 | Riska    | Perempuan | Yogyakarta | 1990-11-27 |
+       1 |         3 | Jl. Gili      |
+| 63 | 00004 | Ridwan   | Laki-laki | Lampung    | 1979-01-13 |        1 |         4 | Jl. A yani    |
+| 64 | 00005 | Asih     | Perempuan | Bogor      | 1999-10-22 |        1 |         2 | Jl. Sudirman  |
+| 65 | 00006 | Runi     | Perempuan | Bogor      | 1999-08-17 |        2 |         1 | Jl. Bayam     |
+| 66 | 00007 | Kirana   | Perempuan | Jakarta    | 2000-08-11 |        2 |         2 | Jl. Baru      |
+| 67 | 00008 | Santoso  | Laki-laki | Solo       | 1988-11-17 |        2 |         3 | Jl. Anggrek   |
+| 68 | 00009 | Agusalim | Laki-laki | Garut      | 1975-02-09 |        2 |         4 | Jl. Anggrek   |
+| 69 | 00010 | Anto     | Laki-laki | Tangerang  | 1998-07-29 |        2 |         1 | Jl. Sosial    |
+| 70 | 00011 | Asep     | Laki-laki | Nagrek     | 1976-12-30 |        3 |         1 | Jl. Monalisa  |
+| 71 | 00012 | Andini   | Perempuan | Parung     | 1995-04-20 |        3 |         3 | Jl. Apung     |
+| 72 | 00013 | Ancika   | Perempuan | Bandung    | 1782-05-11 |        3 |         4 | Jl. Siliwangi |
+| 73 | 00014 | Firman   | Laki-laki | Kutai      | 0189-08-16 |        3 |         4 | Jl. Antapani  |
+| 74 | 00015 | Arhan    | Laki-laki | Boyolali   | 1899-07-16 |        3 |         2 | Jl. Antariksa |
+| 75 | 00016 | Haris    | Laki-laki | India      | 1897-04-12 |        4 |         1 | Jl. Cikeas    |
+| 76 | 00017 | Duni     | Laki-laki | Tasik      | 1968-07-19 |        4 |         2 | Jl. Amin      |
+| 77 | 00018 | Riska    |           | Wonosobo   | 1974-10-29 |        4 |         3 | Jl. Badru     |
+| 78 | 00019 | Najma    |           | Boyolali   | 0000-00-00 |        4 |         4 | Jl. Manokwari |
+| 79 | 00020 | Minul    |           | Bima       | 2001-02-24 |        4 |         4 | Jl. Tajmahal  |
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+
+20 rows in set (0.001 sec)
+
+- No 16 = Ubah data 5 orang pegawai (dengan ketentuan ubah 3 kolom(bebas))
+
+MariaDB [dbpegawai]> UPDATE pegawai
+    -> SET nama = 'Riska', gender = 'Perempuan', alamat = 'Jl. Wicaksana'
+    -> WHERE nip IN ('00020');
+Query OK, 1 row affected (0.005 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai]> SET nama = 'Najma', gender = 'perempuan'
+    -> ;
+ERROR 1193 (HY000): Unknown system variable 'nama'
+MariaDB [dbpegawai]> UPDATE pegawai
+    -> SET nama = 'Najma', gender = 'perempuan'
+    -> WHERE nip IN ('00019');
+Query OK, 1 row affected (0.006 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai]> UPDATE pegawai
+    -> SET nama = 'Minul', gender = 'perempuan'
+    -> WHERE nip IN ('00018');
+Query OK, 1 row affected (0.005 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+
+| id | nip   | nama     | gender    | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat        |
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+
+|  1 | 00001 | Muhammad | Laki-laki | Surakarta  | 1987-01-15 |        1 |         1 | Jl. Tegalega  |
+|  2 | 00002 | Ani      | Perempuan | Aceh       | 1980-02-25 |        1 |         1 | Jl. Hasibuan  |
+|  3 | 00003 | Riska    | Perempuan | Yogyakarta | 1990-11-27 |        1 |         3 | Jl. Gili      |
+| 63 | 00004 | Ridwan   | Laki-laki | Lampung    | 1979-01-13 |        1 |         4 | Jl. A yani    |
+| 64 | 00005 | Asih     | Perempuan | Bogor      | 1999-10-22 |        1 |         2 | Jl. Sudirman  |
+| 65 | 00006 | Runi     | Perempuan | Bogor      | 1999-08-17 |        2 |         1 | Jl. Bayam     |
+| 66 | 00007 | Kirana   | Perempuan | Jakarta    | 2000-08-11 |        2 |         2 | Jl. Baru      |
+| 67 | 00008 | Santoso  | Laki-laki | Solo       | 1988-11-17 |        2 |         3 | Jl. Anggrek   |
+| 68 | 00009 | Agusalim | Laki-laki | Garut      | 1975-02-09 |        2 |         4 | Jl. Anggrek   |
+| 69 | 00010 | Anto     | Laki-laki | Tangerang  | 1998-07-29 |        2 |         1 | Jl. Sosial    |
+| 70 | 00011 | Asep     | Laki-laki | Nagrek     | 1976-12-30 |        3 |         1 | Jl. Monalisa  |
+| 71 | 00012 | Andini   | Perempuan | Parung     | 1995-04-20 |        3 |         3 | Jl. Apung     |
+| 72 | 00013 | Ancika   | Perempuan | Bandung    | 1782-05-11 |        3 |         4 | Jl. Siliwangi |
+| 73 | 00014 | Firman   | Laki-laki | Kutai      | 0189-08-16 |        3 |         4 | Jl. Antapani  |
+| 74 | 00015 | Arhan    | Laki-laki | Boyolali   | 1899-07-16 |        3 |         2 | Jl. Antariksa |
+| 75 | 00016 | Haris    | Laki-laki | India      | 1897-04-12 |        4 |         1 | Jl. Cikeas    |
+| 76 | 00017 | Duni     | Laki-laki | Tasik      | 1968-07-19 |        4 |         2 | Jl. Amin      |
+| 77 | 00018 | Minul    | Perempuan | Wonosobo   | 1974-10-29 |        4 |         3 | Jl. Badru     |
+| 78 | 00019 | Najma    | Perempuan | Boyolali   | 0000-00-00 |        4 |         4 | Jl. Manokwari |
+| 79 | 00020 | Riska    | Perempuan | Bima       | 2001-02-24 |        4 |         4 | Jl. Wicaksana |
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+
+20 rows in set (0.001 sec)
+
+MariaDB [dbpegawai]> UPDATE pegawai
+    -> SET nama = 'Chika', gender = 'Perempuan', alamat = 'Jl. Indah'
+    -> WHERE nip IN ('00015');
+Query OK, 1 row affected (0.005 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+
+| id | nip   | nama     | gender    | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat        |
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+
+|  1 | 00001 | Muhammad | Laki-laki | Surakarta  | 1987-01-15 |        1 |         1 | Jl. Tegalega  |
+|  2 | 00002 | Ani      | Perempuan | Aceh       | 1980-02-25 |        1 |         1 | Jl. Hasibuan  |
+|  3 | 00003 | Riska    | Perempuan | Yogyakarta | 1990-11-27 |        1 |         3 | Jl. Gili      |
+| 63 | 00004 | Ridwan   | Laki-laki | Lampung    | 1979-01-13 |        1 |         4 | Jl. A yani    |
+| 64 | 00005 | Asih     | Perempuan | Bogor      | 1999-10-22 |        1 |         2 | Jl. Sudirman  |
+| 65 | 00006 | Runi     | Perempuan | Bogor      | 1999-08-17 |        2 |         1 | Jl. Bayam     |
+| 66 | 00007 | Kirana   | Perempuan | Jakarta    | 2000-08-11 |        2 |         2 | Jl. Baru      |
+| 67 | 00008 | Santoso  | Laki-laki | Solo       | 1988-11-17 |        2 |         3 | Jl. Anggrek   |
+| 68 | 00009 | Agusalim | Laki-laki | Garut      | 1975-02-09 |        2 |         4 | Jl. Anggrek   |
+| 69 | 00010 | Anto     | Laki-laki | Tangerang  | 1998-07-29 |        2 |         1 | Jl. Sosial    |
+| 70 | 00011 | Asep     | Laki-laki | Nagrek     | 1976-12-30 |        3 |         1 | Jl. Monalisa  |
+| 71 | 00012 | Andini   | Perempuan | Parung     | 1995-04-20 |        3 |         3 | Jl. Apung     |
+| 72 | 00013 | Ancika   | Perempuan | Bandung    | 1782-05-11 |        3 |         4 | Jl. Siliwangi |
+| 73 | 00014 | Firman   | Laki-laki | Kutai      | 0189-08-16 |        3 |         4 | Jl. Antapani  |
+| 74 | 00015 | Chika    | Perempuan | Boyolali   | 1899-07-16 |        3 |         2 | Jl. Indah     |
+| 75 | 00016 | Haris    | Laki-laki | India      | 1897-04-12 |        4 |         1 | Jl. Cikeas    |
+| 76 | 00017 | Duni     | Laki-laki | Tasik      | 1968-07-19 |        4 |         2 | Jl. Amin      |
+| 77 | 00018 | Minul    | Perempuan | Wonosobo   | 1974-10-29 |        4 |         3 | Jl. Badru     |
+| 78 | 00019 | Najma    | Perempuan | Boyolali   | 0000-00-00 |        4 |         4 | Jl. Manokwari |
+| 79 | 00020 | Riska    | Perempuan | Bima       | 2001-02-24 |        4 |         4 | Jl. Wicaksana |
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+
+20 rows in set (0.001 sec)
+
+- No 17 = Hapus 2 orang pegawai pegawai terakhir
+
+MariaDB [dbpegawai]> DELETE FROM pegawai ORDER BY id DESC LIMIT
+2;
+Query OK, 2 rows affected (0.005 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+
+| id | nip   | nama     | gender    | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat        |
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+
+|  1 | 00001 | Muhammad | Laki-laki | Surakarta  | 1987-01-15 |        1 |         1 | Jl. Tegalega  |
+|  2 | 00002 | Ani      | Perempuan | Aceh       | 1980-02-25 |        1 |         1 | Jl. Hasibuan  |
+|  3 | 00003 | Riska    | Perempuan | Yogyakarta | 1990-11-27 |        1 |         3 | Jl. Gili      |
+| 63 | 00004 | Ridwan   | Laki-laki | Lampung    | 1979-01-13 |        1 |         4 | Jl. A yani    |
+| 64 | 00005 | Asih     | Perempuan | Bogor      | 1999-10-22 |        1 |         2 | Jl. Sudirman  |
+| 65 | 00006 | Runi     | Perempuan | Bogor      | 1999-08-17 |        2 |         1 | Jl. Bayam     |
+| 66 | 00007 | Kirana   | Perempuan | Jakarta    | 2000-08-11 |        2 |         2 | Jl. Baru      |
+| 67 | 00008 | Santoso  | Laki-laki | Solo       | 1988-11-17 |        2 |         3 | Jl. Anggrek   |
+| 68 | 00009 | Agusalim | Laki-laki | Garut      | 1975-02-09 |        2 |         4 | Jl. Anggrek   |
+| 69 | 00010 | Anto     | Laki-laki | Tangerang  | 1998-07-29 |        2 |         1 | Jl. Sosial    |
+| 70 | 00011 | Asep     | Laki-laki | Nagrek     | 1976-12-30 |        3 |         1 | Jl. Monalisa  |
+| 71 | 00012 | Andini   | Perempuan | Parung     | 1995-04-20 |        3 |         3 | Jl. Apung     |
+| 72 | 00013 | Ancika   | Perempuan | Bandung    | 1782-05-11 |        3 |         4 | Jl. Siliwangi |
+| 73 | 00014 | Firman   | Laki-laki | Kutai      | 0189-08-16 |        3 |         4 | Jl. Antapani  |
+| 74 | 00015 | Chika    | Perempuan | Boyolali   | 1899-07-16 |        3 |         2 | Jl. Indah     |
+| 75 | 00016 | Haris    | Laki-laki | India      | 1897-04-12 |        4 |         1 | Jl. Cikeas    |
+| 76 | 00017 | Duni     | Laki-laki | Tasik      | 1968-07-19 |        4 |         2 | Jl. Amin      |
+| 77 | 00018 | Minul    | Perempuan | Wonosobo   | 1974-10-29 |        4 |         3 | Jl. Badru     |
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+
+18 rows in set (0.001 sec)
+
+- No 18 = Gunakan alter tabel pada tabel pegawai untuk menambahkan kolom baru berat_badan dengan
+tipe data float wajib diisi, lalu input berat badan semua pegawai secara acak
+
+MariaDB [dbpegawai]> ALTER TABLE pegawai
+    -> ADD COLUMN berat_badan FLOAT NOT NULL;
+Query OK, 0 rows affected (0.015 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+-------------+
+| id | nip   | nama     | gender    | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat        | berat_badan |
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+-------------+
+|  1 | 00001 | Muhammad | Laki-laki | Surakarta  | 1987-01-15 |        1 |         1 | Jl. Tegalega  |           0 |
+|  2 | 00002 | Ani      | Perempuan | Aceh       | 1980-02-25 |        1 |         1 | Jl. Hasibuan  |           0 |
+|  3 | 00003 | Riska    | Perempuan | Yogyakarta | 1990-11-27 |        1 |         3 | Jl. Gili      |           0 |
+| 63 | 00004 | Ridwan   | Laki-laki | Lampung    | 1979-01-13 |        1 |         4 | Jl. A yani    |           0 |
+| 64 | 00005 | Asih     | Perempuan | Bogor      | 1999-10-22 |        1 |         2 | Jl. Sudirman  |           0 |
+| 65 | 00006 | Runi     | Perempuan | Bogor      | 1999-08-17 |        2 |         1 | Jl. Bayam     |           0 |
+| 66 | 00007 | Kirana   | Perempuan | Jakarta    | 2000-08-11 |        2 |         2 | Jl. Baru      |           0 |
+| 67 | 00008 | Santoso  | Laki-laki | Solo       | 1988-11-17 |        2 |         3 | Jl. Anggrek   |           0 |
+| 68 | 00009 | Agusalim | Laki-laki | Garut      | 1975-02-09 |        2 |         4 | Jl. Anggrek   |           0 |
+| 69 | 00010 | Anto     | Laki-laki | Tangerang  | 1998-07-29 |        2 |         1 | Jl. Sosial    |           0 |
+| 70 | 00011 | Asep     | Laki-laki | Nagrek     | 1976-12-30 |        3 |         1 | Jl. Monalisa  |           0 |
+| 71 | 00012 | Andini   | Perempuan | Parung     | 1995-04-20 |        3 |         3 | Jl. Apung     |           0 |
+| 72 | 00013 | Ancika   | Perempuan | Bandung    | 1782-05-11 |        3 |         4 | Jl. Siliwangi |           0 |
+| 73 | 00014 | Firman   | Laki-laki | Kutai      | 0189-08-16 |        3 |         4 | Jl. Antapani  |           0 |
+| 74 | 00015 | Chika    | Perempuan | Boyolali   | 1899-07-16 |        3 |         2 | Jl. Indah     |           0 |
+| 75 | 00016 | Haris    | Laki-laki | India      | 1897-04-12 |        4 |         1 | Jl. Cikeas    |           0 |
+| 76 | 00017 | Duni     | Laki-laki | Tasik      | 1968-07-19 |        4 |         2 | Jl. Amin      |           0 |
+| 77 | 00018 | Minul    | Perempuan | Wonosobo   | 1974-10-29 |        4 |         3 | Jl. Badru     |           0 |
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+-------------+
+18 rows in set (0.001 sec)
+
+
+MariaDB [dbpegawai]> UPDATE pegawai
+    -> SET berat_badan = ROUND(RAND() * 50 + 50, 2);
+Query OK, 18 rows affected (0.006 sec)
+Rows matched: 18  Changed: 18  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+-------------+
+| id | nip   | nama     | gender    | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat        | berat_badan |
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+-------------+
+|  1 | 00001 | Muhammad | Laki-laki | Surakarta  | 1987-01-15 |        1 |         1 | Jl. Tegalega  |       98.24 |
+|  2 | 00002 | Ani      | Perempuan | Aceh       | 1980-02-25 |        1 |         1 | Jl. Hasibuan  |       75.87 |
+|  3 | 00003 | Riska    | Perempuan | Yogyakarta | 1990-11-27 |        1 |         3 | Jl. Gili      |       84.63 |
+| 63 | 00004 | Ridwan   | Laki-laki | Lampung    | 1979-01-13 |        1 |         4 | Jl. A yani    |       95.54 |
+| 64 | 00005 | Asih     | Perempuan | Bogor      | 1999-10-22 |        1 |         2 | Jl. Sudirman  |       73.81 |
+| 65 | 00006 | Runi     | Perempuan | Bogor      | 1999-08-17 |        2 |         1 | Jl. Bayam     |       82.43 |
+| 66 | 00007 | Kirana   | Perempuan | Jakarta    | 2000-08-11 |        2 |         2 | Jl. Baru      |       90.71 |
+| 67 | 00008 | Santoso  | Laki-laki | Solo       | 1988-11-17 |        2 |         3 | Jl. Anggrek   |       56.27 |
+| 68 | 00009 | Agusalim | Laki-laki | Garut      | 1975-02-09 |        2 |         4 | Jl. Anggrek   |       59.22 |
+| 69 | 00010 | Anto     | Laki-laki | Tangerang  | 1998-07-29 |        2 |         1 | Jl. Sosial    |        77.3 |
+| 70 | 00011 | Asep     | Laki-laki | Nagrek     | 1976-12-30 |        3 |         1 | Jl. Monalisa  |       58.85 |
+| 71 | 00012 | Andini   | Perempuan | Parung     | 1995-04-20 |        3 |         3 | Jl. Apung     |       62.34 |
+| 72 | 00013 | Ancika   | Perempuan | Bandung    | 1782-05-11 |        3 |         4 | Jl. Siliwangi |       85.15 |
+| 73 | 00014 | Firman   | Laki-laki | Kutai      | 0189-08-16 |        3 |         4 | Jl. Antapani  |       88.73 |
+| 74 | 00015 | Chika    | Perempuan | Boyolali   | 1899-07-16 |        3 |         2 | Jl. Indah     |       88.22 |
+| 75 | 00016 | Haris    | Laki-laki | India      | 1897-04-12 |        4 |         1 | Jl. Cikeas    |       74.89 |
+| 76 | 00017 | Duni     | Laki-laki | Tasik      | 1968-07-19 |        4 |         2 | Jl. Amin      |        59.8 |
+| 77 | 00018 | Minul    | Perempuan | Wonosobo   | 1974-10-29 |        4 |         3 | Jl. Badru     |       74.31 |
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+-------------+
+18 rows in set (0.001 sec)
+
+- No 19 = Gunakan alter tabel pada tabel pegawai untuk menambahkan kolom baru umur dengan tipe data
+integer wajib diisi, lalu input umur semua pegawai secara acak
+
+MariaDB [dbpegawai]> ALTER TABLE pegawai
+    -> ADD COLUMN umur INT NOT NULL;
+Query OK, 0 rows affected (0.012 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai]> UPDATE pegawai
+    -> SET umur = FLOOR(RAND() * 40) + 20;
+Query OK, 18 rows affected (0.005 sec)
+Rows matched: 18  Changed: 18  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+-------------+------+
+| id | nip   | nama     | gender    | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat        | berat_badan | umur |
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+-------------+------+
+|  1 | 00001 | Muhammad | Laki-laki | Surakarta  | 1987-01-15 |        1 |         1 | Jl. Tegalega  |       98.24 |   53 |
+|  2 | 00002 | Ani      | Perempuan | Aceh       | 1980-02-25 |        1 |         1 | Jl. Hasibuan  |       75.87 |   50 |
+|  3 | 00003 | Riska    | Perempuan | Yogyakarta | 1990-11-27 |        1 |         3 | Jl. Gili      |       84.63 |   30 |
+| 63 | 00004 | Ridwan   | Laki-laki | Lampung    | 1979-01-13 |        1 |         4 | Jl. A yani    |       95.54 |   20 |
+| 64 | 00005 | Asih     | Perempuan | Bogor      | 1999-10-22 |        1 |         2 | Jl. Sudirman  |       73.81 |   30 |
+| 65 | 00006 | Runi     | Perempuan | Bogor      | 1999-08-17 |        2 |         1 | Jl. Bayam     |       82.43 |   29 |
+| 66 | 00007 | Kirana   | Perempuan | Jakarta    | 2000-08-11 |
+       2 |         2 | Jl. Baru      |       90.71 |   38 |
+| 67 | 00008 | Santoso  | Laki-laki | Solo       | 1988-11-17 |        2 |         3 | Jl. Anggrek   |       56.27 |   43 |
+| 68 | 00009 | Agusalim | Laki-laki | Garut      | 1975-02-09 |        2 |         4 | Jl. Anggrek   |       59.22 |   41 |
+| 69 | 00010 | Anto     | Laki-laki | Tangerang  | 1998-07-29 |        2 |         1 | Jl. Sosial    |        77.3 |   57 |
+| 70 | 00011 | Asep     | Laki-laki | Nagrek     | 1976-12-30 |        3 |         1 | Jl. Monalisa  |       58.85 |   23 |
+| 71 | 00012 | Andini   | Perempuan | Parung     | 1995-04-20 |        3 |         3 | Jl. Apung     |       62.34 |   44 |
+| 72 | 00013 | Ancika   | Perempuan | Bandung    | 1782-05-11 |        3 |         4 | Jl. Siliwangi |       85.15 |   53 |
+| 73 | 00014 | Firman   | Laki-laki | Kutai      | 0189-08-16 |        3 |         4 | Jl. Antapani  |       88.73 |   31 |
+| 74 | 00015 | Chika    | Perempuan | Boyolali   | 1899-07-16 |        3 |         2 | Jl. Indah     |       88.22 |   59 |
+| 75 | 00016 | Haris    | Laki-laki | India      | 1897-04-12 |        4 |         1 | Jl. Cikeas    |       74.89 |   22 |
+| 76 | 00017 | Duni     | Laki-laki | Tasik      | 1968-07-19 |        4 |         2 | Jl. Amin      |        59.8 |   33 |
+| 77 | 00018 | Minul    | Perempuan | Wonosobo   | 1974-10-29 |        4 |         3 | Jl. Badru     |       74.31 |   40 |
++----+-------+----------+-----------+------------+------------+----------+-----------+---------------+-------------+------+
+18 rows in set (0.001 sec)
+
+- No 20 = Gunakan alter tabel pada tabel pegawai untuk mengubah nama kolom gender menjadi
+jenis_kelamin 
+
+MariaDB [dbpegawai]> ALTER TABLE pegawai
+    -> CHANGE COLUMN gender jenis_kelamin ENUM('Laki-laki', 'Perempuan') NOT NULL;
+Query OK, 0 rows affected (0.012 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+----------+---------------+------------+------------+----------+-----------+---------------+-------------+------+
+| id | nip   | nama     | jenis_kelamin | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat        | berat_badan | umur |
++----+-------+----------+---------------+------------+------------+----------+-----------+---------------+-------------+------+
+|  1 | 00001 | Muhammad | Laki-laki     | Surakarta  | 1987-01-15 |        1 |         1 | Jl. Tegalega  |       98.24 |   53 |
+|  2 | 00002 | Ani      | Perempuan     | Aceh       | 1980-02-25 |        1 |         1 | Jl. Hasibuan  |       75.87 |   50 |
+|  3 | 00003 | Riska    | Perempuan     | Yogyakarta | 1990-11-27 |        1 |         3 | Jl. Gili      |       84.63 |   30 |
+| 63 | 00004 | Ridwan   | Laki-laki     | Lampung    | 1979-01-13 |        1 |         4 | Jl. A yani    |       95.54 |   20 |
+| 64 | 00005 | Asih     | Perempuan     | Bogor      | 1999-10-22 |        1 |         2 | Jl. Sudirman  |       73.81 |   30 |
+| 65 | 00006 | Runi     | Perempuan     | Bogor      | 1999-08-17 |        2 |         1 | Jl. Bayam     |       82.43 |   29 |
+| 66 | 00007 | Kirana   | Perempuan     | Jakarta    | 2000-08-11 |        2 |         2 | Jl. Baru      |       90.71 |   38 |
+| 67 | 00008 | Santoso  | Laki-laki     | Solo       | 1988-11-17 |        2 |         3 | Jl. Anggrek   |       56.27 |   43 |
+| 68 | 00009 | Agusalim | Laki-laki     | Garut      | 1975-02-09 |        2 |         4 | Jl. Anggrek   |       59.22 |   41 |
+| 69 | 00010 | Anto     | Laki-laki     | Tangerang  | 1998-07-29 |        2 |         1 | Jl. Sosial    |        77.3 |   57 |
+| 70 | 00011 | Asep     | Laki-laki     | Nagrek     | 1976-12-30 |        3 |         1 | Jl. Monalisa  |       58.85 |   23 |
+| 71 | 00012 | Andini   | Perempuan     | Parung     | 1995-04-20 |        3 |         3 | Jl. Apung     |       62.34 |   44 |
+| 72 | 00013 | Ancika   | Perempuan     | Bandung    | 1782-05-11 |        3 |         4 | Jl. Siliwangi |       85.15 |   53 |
+| 73 | 00014 | Firman   | Laki-laki     | Kutai      | 0189-08-16 |        3 |         4 | Jl. Antapani  |       88.73 |   31 |
+| 74 | 00015 | Chika    | Perempuan     | Boyolali   | 1899-07-16 |        3 |         2 | Jl. Indah     |       88.22 |   59 |
+| 75 | 00016 | Haris    | Laki-laki     | India      | 1897-04-12 |        4 |         1 | Jl. Cikeas    |       74.89 |   22 |
+| 76 | 00017 | Duni     | Laki-laki     | Tasik      | 1968-07-19 |        4 |         2 | Jl. Amin      |        59.8 |   33 |
+| 77 | 00018 | Minul    | Perempuan     | Wonosobo   | 1974-10-29 |        4 |         3 | Jl. Badru     |       74.31 |   40 |
++----+-------+----------+---------------+------------+------------+----------+-----------+---------------+-------------+------+
+18 rows in set (0.001 sec)
+
+- No 21 = Tampilkan kolom2 tertentu di tabel pegawai (nip,nama,jenis_kelamin,alamat)
+
+MariaDB [dbpegawai]> SELECT nip, nama, jenis_kelamin, alamat FRO
+M pegawai;
++-------+----------+---------------+---------------+
+| nip   | nama     | jenis_kelamin | alamat        |
++-------+----------+---------------+---------------+
+| 00001 | Muhammad | Laki-laki     | Jl. Tegalega  |
+| 00002 | Ani      | Perempuan     | Jl. Hasibuan  |
+| 00003 | Riska    | Perempuan     | Jl. Gili      |
+| 00004 | Ridwan   | Laki-laki     | Jl. A yani    |
+| 00005 | Asih     | Perempuan     | Jl. Sudirman  |
+| 00006 | Runi     | Perempuan     | Jl. Bayam     |
+| 00007 | Kirana   | Perempuan     | Jl. Baru      |
+| 00008 | Santoso  | Laki-laki     | Jl. Anggrek   |
+| 00009 | Agusalim | Laki-laki     | Jl. Anggrek   |
+| 00010 | Anto     | Laki-laki     | Jl. Sosial    |
+| 00011 | Asep     | Laki-laki     | Jl. Monalisa  |
+| 00012 | Andini   | Perempuan     | Jl. Apung     |
+| 00013 | Ancika   | Perempuan     | Jl. Siliwangi |
+| 00014 | Firman   | Laki-laki     | Jl. Antapani  |
+| 00015 | Chika    | Perempuan     | Jl. Indah     |
+| 00016 | Haris    | Laki-laki     | Jl. Cikeas    |
+| 00017 | Duni     | Laki-laki     | Jl. Amin      |
+| 00018 | Minul    | Perempuan     | Jl. Badru     |
++-------+----------+---------------+---------------+
+18 rows in set (0.001 sec)
+
+- No 22 = Tampilkan baris2 tertentu di tabel pegawai (yang gendernya laki2 saja)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE jenis_kelamin = 'Laki-laki';
++----+-------+----------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+| id | nip   | nama     | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat       | berat_badan | umur |
++----+-------+----------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+|  1 | 00001 | Muhammad | Laki-laki     | Surakarta | 1987-01-15 |        1 |         1 | Jl. Tegalega |       98.24 |   53 |
+| 63 | 00004 | Ridwan   | Laki-laki     | Lampung   | 1979-01-13 |        1 |         4 | Jl. A yani   |       95.54 |   20 |
+| 67 | 00008 | Santoso  | Laki-laki     | Solo      | 1988-11-17 |        2 |         3 | Jl. Anggrek  |       56.27 |   43 |
+| 68 | 00009 | Agusalim | Laki-laki     | Garut     | 1975-02-09 |        2 |         4 | Jl. Anggrek  |       59.22 |   41 |
+| 69 | 00010 | Anto     | Laki-laki     | Tangerang | 1998-07-29 |        2 |         1 | Jl. Sosial   |        77.3 |   57 |
+| 70 | 00011 | Asep     | Laki-laki     | Nagrek    | 1976-12-30 |        3 |         1 | Jl. Monalisa |       58.85 |   23 |
+| 73 | 00014 | Firman   | Laki-laki     | Kutai     | 0189-08-16 |        3 |         4 | Jl. Antapani |       88.73 |   31 |
+| 75 | 00016 | Haris    | Laki-laki     | India     | 1897-04-12 |        4 |         1 | Jl. Cikeas   |       74.89 |   22 |
+| 76 | 00017 | Duni     | Laki-laki     | Tasik     | 1968-07-19 |        4 |         2 | Jl. Amin     |        59.8 |   33 |
++----+-------+----------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+9 rows in set (0.001 sec)
+
+- No 23 = Tampilkan baris2 tertentu di tabel pegawai (yang bekerja di divisi IT dan gendernya perempuan)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE iddivisi = (SELECT id FROM divisi WHERE nama = 'IT') AND jenis_kelamin = 'Perempuan';
++----+-------+-------+---------------+-----------+------------+----------+-----------+-----------+-------------+------+
+| id | nip   | nama  | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat    | berat_badan | umur |
++----+-------+-------+---------------+-----------+------------+----------+-----------+-----------+-------------+------+
+| 77 | 00018 | Minul | Perempuan     | Wonosobo  | 1974-10-29 |        4 |         3 | Jl. Badru |       74.31 |   40 |
++----+-------+-------+---------------+-----------+------------+----------+-----------+-----------+-------------+------+
+1 row in set (0.007 sec)
+
+ - No 24 = Tampilkan data pegawai yang umurnya di atas 30 tahun dan lahirnya di kota jakarta dengan
+klausa WHERE, AND
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE umur > 30 AND tmp_lahir = 'Jakarta';
++----+-------+--------+---------------+-----------+------------+----------+-----------+----------+-------------+------+
+| id | nip   | nama   | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat   | berat_badan | umur |
++----+-------+--------+---------------+-----------+------------+----------+-----------+----------+-------------+------+
+| 66 | 00007 | Kirana | Perempuan     | Jakarta   | 2000-08-11 |        2 |         2 | Jl. Baru |       90.71 |   38 |
++----+-------+--------+---------------+-----------+------------+----------+-----------+----------+-------------+------+
+1 row in set (0.001 sec)
+
+- No 25 = Tampilkan data pegawai yang bekerja pada divisi marketing, berumur lebih dari 30 tahun dan
+berjenis kelamin perempuan dengan klausa WHERE, AND
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE iddivisi = (SELECT id FROM divisi WHERE nama = 'Marketing') AND umur > 30 AND j
+enis_kelamin = 'Perempuan';
++----+-------+--------+---------------+-----------+------------+----------+-----------+---------------+-------------+------+
+| id | nip   | nama   | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat        | berat_badan | umur |
++----+-------+--------+---------------+-----------+------------+----------+-----------+---------------+-------------+------+
+| 71 | 00012 | Andini | Perempuan     | Parung    | 1995-04-20 |        3 |         3 | Jl. Apung     |       62.34 |   44 |
+| 72 | 00013 | Ancika | Perempuan     | Bandung   | 1782-05-11 |        3 |         4 | Jl. Siliwangi |       85.15 |   53 |
+| 74 | 00015 | Chika  | Perempuan     | Boyolali  | 1899-07-16 |        3 |         2 | Jl. Indah     |       88.22 |   59 |
++----+-------+--------+---------------+-----------+------------+----------+-----------+---------------+-------------+------+
+3 rows in set (0.001 sec)
+
+- No 26 = Tampilkan data pegawai dengan klausa key (nip)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE nip = '00016';
++----+-------+-------+---------------+-----------+------------+----------+-----------+------------+-------------+------+
+| id | nip   | nama  | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat     | berat_badan | umur |
++----+-------+-------+---------------+-----------+------------+----------+-----------+------------+-------------+------+
+| 75 | 00016 | Haris | Laki-laki     | India     | 1897-04-12 |        4 |         1 | Jl. Cikeas |       74.89 |   22 |
++----+-------+-------+---------------+-----------+------------+----------+-----------+------------+-------------+------+
+1 row in set (0.001 sec)
+
+- No 27 = Tampilkan data pegawai dengan klausa non key (gender)
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE gender = 'Laki-Laki';
+ERROR 1054 (42S22): Unknown column 'gender' in 'where clause'
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE jenis_kelamin =
+ 'Laki-laki';
++----+-------+----------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+| id | nip   | nama     | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat       | berat_badan | umur |
++----+-------+----------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+|  1 | 00001 | Muhammad | Laki-laki     | Surakarta | 1987-01-15 |        1 |         1 | Jl. Tegalega |       98.24 |   53 |
+| 63 | 00004 | Ridwan   | Laki-laki     | Lampung   | 1979-01-13 |        1 |         4 | Jl. A yani   |       95.54 |   20 |
+| 67 | 00008 | Santoso  | Laki-laki     | Solo      | 1988-11-17 |        2 |         3 | Jl. Anggrek  |       56.27 |   43 |
+| 68 | 00009 | Agusalim | Laki-laki     | Garut     | 1975-02-09 |        2 |         4 | Jl. Anggrek  |       59.22 |   41 |
+| 69 | 00010 | Anto     | Laki-laki     | Tangerang | 1998-07-29 |        2 |         1 | Jl. Sosial   |        77.3 |   57 |
+| 70 | 00011 | Asep     | Laki-laki     | Nagrek    | 1976-12-30 |        3 |         1 | Jl. Monalisa |       58.85 |   23 |
+| 73 | 00014 | Firman   | Laki-laki     | Kutai     | 0189-08-16 |        3 |         4 | Jl. Antapani |       88.73 |   31 |
+| 75 | 00016 | Haris    | Laki-laki     | India     | 1897-04-12 |        4 |         1 | Jl. Cikeas   |       74.89 |   22 |
+| 76 | 00017 | Duni     | Laki-laki     | Tasik     | 1968-07-19 |        4 |         2 | Jl. Amin     |        59.8 |   33 |
++----+-------+----------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+9 rows in set (0.001 sec)
+
+- No 28 = Tampilkan data pegawai dengan klausa in (menyebutkan beberapa nip)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE nip IN ('00016'
+, '00014', '00020');
++----+-------+--------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+| id | nip   | nama   | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat       | berat_badan | umur |
++----+-------+--------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+| 73 | 00014 | Firman | Laki-laki     | Kutai     | 0189-08-16 |        3 |         4 | Jl. Antapani |       88.73 |   31 |
+| 75 | 00016 | Haris  | Laki-laki     | India     | 1897-04-12 |        4 |         1 | Jl. Cikeas   |       74.89 |   22 |
++----+-------+--------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+2 rows in set (0.002 sec)
+
+- No 29 = Tampilkan data pegawai dengan klausa not in (menyebutkan beberapa tempat lahir)
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE tmp_lahir NOT IN ('Solo', 'Bandung', 'Bogor');
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE tmp_lahir NOT I
+N ('Solo', 'Bogor', 'Bandung');
++----+-------+----------+---------------+------------+------------+----------+-----------+--------------+-------------+------+
+| id | nip   | nama     | jenis_kelamin | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat       | berat_badan | umur |
++----+-------+----------+---------------+------------+------------+----------+-----------+--------------+-------------+------+
+|  1 | 00001 | Muhammad | Laki-laki     | Surakarta  | 1987-01-15 |        1 |         1 | Jl. Tegalega |       98.24 |   53 |
+|  2 | 00002 | Ani      | Perempuan     | Aceh       | 1980-02-25 |        1 |         1 | Jl. Hasibuan |       75.87 |   50 |
+|  3 | 00003 | Riska    | Perempuan     | Yogyakarta | 1990-11-27 |        1 |         3 | Jl. Gili     |       84.63 |   30 |
+| 63 | 00004 | Ridwan   | Laki-laki     | Lampung    | 1979-01-13 |        1 |         4 | Jl. A yani   |       95.54 |   20 |
+| 66 | 00007 | Kirana   | Perempuan     | Jakarta    | 2000-08-11 |        2 |         2 | Jl. Baru     |       90.71 |   38 |
+| 68 | 00009 | Agusalim | Laki-laki     | Garut      | 1975-02-09 |        2 |         4 | Jl. Anggrek  |       59.22 |   41 |
+| 69 | 00010 | Anto     | Laki-laki     | Tangerang  | 1998-07-29 |        2 |         1 | Jl. Sosial   |        77.3 |   57 |
+| 70 | 00011 | Asep     | Laki-laki     | Nagrek     | 1976-12-30 |        3 |         1 | Jl. Monalisa |       58.85 |   23 |
+| 71 | 00012 | Andini   | Perempuan     | Parung     | 1995-04-20 |        3 |         3 | Jl. Apung    |       62.34 |   44 |
+| 73 | 00014 | Firman   | Laki-laki     | Kutai      | 0189-08-16 |        3 |         4 | Jl. Antapani |       88.73 |   31 |
+| 74 | 00015 | Chika    | Perempuan     | Boyolali   | 1899-07-16 |        3 |         2 | Jl. Indah    |       88.22 |   59 |
+| 75 | 00016 | Haris    | Laki-laki     | India      | 1897-04-12 |        4 |         1 | Jl. Cikeas   |       74.89 |   22 |
+| 76 | 00017 | Duni     | Laki-laki     | Tasik      | 1968-07-19 |        4 |         2 | Jl. Amin     |        59.8 |   33 |
+| 77 | 00018 | Minul    | Perempuan     | Wonosobo   | 1974-10-29 |        4 |         3 | Jl. Badru    |       74.31 |   40 |
++----+-------+----------+---------------+------------+------------+----------+-----------+--------------+-------------+------+
+14 rows in set (0.001 sec)
+
+- No 30 = Tampilkan data pegawai berdasarkan nama secara ascending 
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai ORDER BY nama ASC;
++----+-------+----------+---------------+------------+------------+----------+-----------+---------------+-------------+------+
+| id | nip   | nama     | jenis_kelamin | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat        | berat_badan | umur |
++----+-------+----------+---------------+------------+------------+----------+-----------+---------------+-------------+------+
+| 68 | 00009 | Agusalim | Laki-laki     | Garut      | 1975-02-09 |        2 |         4 | Jl. Anggrek   |       59.22 |   41 |
+| 72 | 00013 | Ancika   | Perempuan     | Bandung    | 1782-05-11 |        3 |         4 | Jl. Siliwangi |       85.15 |   53 |
+| 71 | 00012 | Andini   | Perempuan     | Parung     | 1995-04-20 |        3 |         3 | Jl. Apung     |       62.34 |   44 |
+|  2 | 00002 | Ani      | Perempuan     | Aceh       | 1980-02-25 |        1 |         1 | Jl. Hasibuan  |       75.87 |   50 |
+| 69 | 00010 | Anto     | Laki-laki     | Tangerang  | 1998-07-29 |        2 |         1 | Jl. Sosial    |        77.3 |   57 |
+| 70 | 00011 | Asep     | Laki-laki     | Nagrek     | 1976-12-30 |        3 |         1 | Jl. Monalisa  |       58.85 |   23 |
+| 64 | 00005 | Asih     | Perempuan     | Bogor      | 1999-10-22 |        1 |         2 | Jl. Sudirman  |       73.81 |   30 |
+| 74 | 00015 | Chika    | Perempuan     | Boyolali   | 1899-07-16 |        3 |         2 | Jl. Indah     |       88.22 |   59 |
+| 76 | 00017 | Duni     | Laki-laki     | Tasik      | 1968-07-19 |        4 |         2 | Jl. Amin      |        59.8 |   33 |
+| 73 | 00014 | Firman   | Laki-laki     | Kutai      | 0189-08-16 |        3 |         4 | Jl. Antapani  |       88.73 |   31 |
+| 75 | 00016 | Haris    | Laki-laki     | India      | 1897-04-12 |        4 |         1 | Jl. Cikeas    |       74.89 |   22 |
+| 66 | 00007 | Kirana   | Perempuan     | Jakarta    | 2000-08-11 |        2 |         2 | Jl. Baru      |       90.71 |   38 |
+| 77 | 00018 | Minul    | Perempuan     | Wonosobo   | 1974-10-29 |        4 |         3 | Jl. Badru     |       74.31 |   40 |
+|  1 | 00001 | Muhammad | Laki-laki     | Surakarta  | 1987-01-15 |        1 |         1 | Jl. Tegalega  |       98.24 |   53 |
+| 63 | 00004 | Ridwan   | Laki-laki     | Lampung    | 1979-01-13 |        1 |         4 | Jl. A yani    |       95.54 |   20 |
+|  3 | 00003 | Riska    | Perempuan     | Yogyakarta | 1990-11-27 |        1 |         3 | Jl. Gili      |       84.63 |   30 |
+| 65 | 00006 | Runi     | Perempuan     | Bogor      | 1999-08-17 |        2 |         1 | Jl. Bayam     |       82.43 |   29 |
+| 67 | 00008 | Santoso  | Laki-laki     | Solo       | 1988-11-17 |        2 |         3 | Jl. Anggrek   |       56.27 |   43 |
++----+-------+----------+---------------+------------+------------+----------+-----------+---------------+-------------+------+
+18 rows in set (0.001 sec)
+
+- No 31 = Tampilkan data pegawai dari yang berat badan paling gemuk ke paling kurus
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai ORDER BY berat_badan DESC;
++----+-------+----------+---------------+------------+------------+----------+-----------+---------------+-------------+------+
+| id | nip   | nama     | jenis_kelamin | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat        | berat_badan | umur |
++----+-------+----------+---------------+------------+------------+----------+-----------+---------------+-------------+------+
+|  1 | 00001 | Muhammad | Laki-laki     | Surakarta  | 1987-01-15 |        1 |         1 | Jl. Tegalega  |       98.24 |   53 |
+| 63 | 00004 | Ridwan   | Laki-laki     | Lampung    | 1979-01-13 |        1 |         4 | Jl. A yani    |       95.54 |   20 |
+| 66 | 00007 | Kirana   | Perempuan     | Jakarta    | 2000-08-11 |        2 |         2 | Jl. Baru      |       90.71 |   38 |
+| 73 | 00014 | Firman   | Laki-laki     | Kutai      | 0189-08-16 |        3 |         4 | Jl. Antapani  |       88.73 |   31 |
+| 74 | 00015 | Chika    | Perempuan     | Boyolali   | 1899-07-16 |        3 |         2 | Jl. Indah     |       88.22 |   59 |
+| 72 | 00013 | Ancika   | Perempuan     | Bandung    | 1782-05-11 |        3 |         4 | Jl. Siliwangi |       85.15 |   53 |
+|  3 | 00003 | Riska    | Perempuan     | Yogyakarta | 1990-11-27 |        1 |         3 | Jl. Gili      |       84.63 |   30 |
+| 65 | 00006 | Runi     | Perempuan     | Bogor      | 1999-08-17 |        2 |         1 | Jl. Bayam     |       82.43 |   29 |
+| 69 | 00010 | Anto     | Laki-laki     | Tangerang  | 1998-07-29 |        2 |         1 | Jl. Sosial    |        77.3 |   57 |
+|  2 | 00002 | Ani      | Perempuan     | Aceh       | 1980-02-25 |        1 |         1 | Jl. Hasibuan  |       75.87 |   50 |
+| 75 | 00016 | Haris    | Laki-laki     | India      | 1897-04-12 |        4 |         1 | Jl. Cikeas    |       74.89 |   22 |
+| 77 | 00018 | Minul    | Perempuan     | Wonosobo   | 1974-10-29 |        4 |         3 | Jl. Badru     |       74.31 |   40 |
+| 64 | 00005 | Asih     | Perempuan     | Bogor      | 1999-10-22 |        1 |         2 | Jl. Sudirman  |       73.81 |   30 |
+| 71 | 00012 | Andini   | Perempuan     | Parung     | 1995-04-20 |        3 |         3 | Jl. Apung     |       62.34 |   44 |
+| 76 | 00017 | Duni     | Laki-laki     | Tasik      | 1968-07-19 |        4 |         2 | Jl. Amin      |        59.8 |   33 |
+| 68 | 00009 | Agusalim | Laki-laki     | Garut      | 1975-02-09 |        2 |         4 | Jl. Anggrek   |       59.22 |   41 |
+| 70 | 00011 | Asep     | Laki-laki     | Nagrek     | 1976-12-30 |        3 |         1 | Jl. Monalisa  |       58.85 |   23 |
+| 67 | 00008 | Santoso  | Laki-laki     | Solo       | 1988-11-17 |        2 |         3 | Jl. Anggrek   |       56.27 |   43 |
++----+-------+----------+---------------+------------+------------+----------+-----------+---------------+-------------+------+
+18 rows in set (0.001 sec)
+
+- No 32 = Tampilkan data 5 pegawai teratas gunakan klausa limit
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai LIMIT 5;
++----+-------+----------+---------------+------------+------------+----------+-----------+--------------+-------------+------+
+| id | nip   | nama     | jenis_kelamin | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat       | berat_badan | umur |
++----+-------+----------+---------------+------------+------------+----------+-----------+--------------+-------------+------+
+|  1 | 00001 | Muhammad | Laki-laki     | Surakarta  | 1987-01-15 |        1 |         1 | Jl. Tegalega |       98.24 |   53 |
+|  2 | 00002 | Ani      | Perempuan     | Aceh       | 1980-02-25 |        1 |         1 | Jl. Hasibuan |       75.87 |   50 |
+|  3 | 00003 | Riska    | Perempuan     | Yogyakarta | 1990-11-27 |        1 |         3 | Jl. Gili     |       84.63 |   30 |
+| 63 | 00004 | Ridwan   | Laki-laki     | Lampung    | 1979-01-13 |        1 |         4 | Jl. A yani   |       95.54 |   20 |
+| 64 | 00005 | Asih     | Perempuan     | Bogor      | 1999-10-22 |        1 |         2 | Jl. Sudirman |       73.81 |   30 |
++----+-------+----------+---------------+------------+------------+----------+-----------+--------------+-------------+------+
+5 rows in set (0.001 sec)
+
+-  No 33 = Tampilkan data 5 pegawai terbawah gunakan klausa limit offset
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai ORDER BY id DESC LIMI
+T 5 OFFSET 0;
++----+-------+--------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+| id | nip   | nama   | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat       | berat_badan | umur |
++----+-------+--------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+| 77 | 00018 | Minul  | Perempuan     | Wonosobo  | 1974-10-29 |        4 |         3 | Jl. Badru    |       74.31 |   40 |
+| 76 | 00017 | Duni   | Laki-laki     | Tasik     | 1968-07-19 |        4 |         2 | Jl. Amin     |        59.8 |   33 |
+| 75 | 00016 | Haris  | Laki-laki     | India     | 1897-04-12 |        4 |         1 | Jl. Cikeas   |       74.89 |   22 |
+| 74 | 00015 | Chika  | Perempuan     | Boyolali  | 1899-07-16 |        3 |         2 | Jl. Indah    |       88.22 |   59 |
+| 73 | 00014 | Firman | Laki-laki     | Kutai     | 0189-08-16 |        3 |         4 | Jl. Antapani |       88.73 |   31 |
++----+-------+--------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+5 rows in set (0.001 sec)
+
+- No 34 = Tampilkan jumlah pegawai gunakan fungsi aggregrat count
+
+MariaDB [dbpegawai]> SELECT COUNT(*) AS jumlah_pegawai FROM pegawai;
++----------------+
+| jumlah_pegawai |
++----------------+
+|             18 |
++----------------+
+1 row in set (0.001 sec)
+
+- No 35 = Tampilkan nip,nama pegawai, umur yg paling tua gunakan fungsi aggregrat max (kombinasi
+dengan sub query)
+
+MariaDB [dbpegawai]> SELECT nip, nama, umur FROM pegawai WHERE u
+mur = (SELECT MAX(umur) FROM pegawai);
++-------+-------+------+
+| nip   | nama  | umur |
++-------+-------+------+
+| 00015 | Chika |   59 |
++-------+-------+------+
+1 row in set (0.002 sec)
+
+- No 36 = Tampilkan nip,nama pegawai, berat_badan yg paling kurus gunakan fungsi aggregrat min (kombinasi dengan sub query)
+
+MariaDB [dbpegawai]> SELECT nip, nama, berat_badan FROM pegawai
+WHERE berat_badan = (SELECT MIN(berat_badan) FROM pegawai);
++-------+---------+-------------+
+| nip   | nama    | berat_badan |
++-------+---------+-------------+
+| 00008 | Santoso |       56.27 |
++-------+---------+-------------+
+1 row in set (0.001 sec)
+
+- No 37 = Tampilkan data rata2 umur pegawai gunakan fungsi aggregrat avg
+
+MariaDB [dbpegawai]> SELECT AVG(umur) AS rata_rata_umur FROM peg
+awai;
++----------------+
+| rata_rata_umur |
++----------------+
+|        38.6667 |
++----------------+
+1 row in set (0.001 sec)
+
+- No 38 = Tampilkan jumlah data pegawai yang laki2 dan berumur lebih dari 40 tahun dan berjabatan Manajer, gunakan fungsi aggregrat count dan klausa AND
+
+- - No 39 = Tampilkan jumlah data pegawai yang perempuan dan berumur kurang dari 40 tahun dan berjabatan Staff, gunakan fungsi aggregrat count dan klausa AND
+
+MariaDB [dbpegawai]> SELECT COUNT(*) AS jumlah_pegawai FROM pega
+wai WHERE jenis_kelamin = 'Laki-laki' AND umur > 40 AND idjabata
+n = (SELECT id FROM jabatan WHERE nama = 'Staff');
++----------------+
+| jumlah_pegawai |
++----------------+
+|              1 |
++----------------+
+1 row in set (0.006 sec)
+
+
+- No 40 = Tampilkan jumlah data pegawai yang perempuan gunakan fungsi aggregrat count
+
+MariaDB [dbpegawai]> SELECT COUNT(*) AS jumlah_pegawai_perempuan FROM pegawai WHERE jenis_kelamin = 'Perempuan';
++--------------------------+
+| jumlah_pegawai_perempuan |
++--------------------------+
+|                        9 |
++--------------------------+
+1 row in set (0.001 sec)
+
+- No 41 = Tampilkan jumlah pegawai yang bekerja di divisi SDM dengan fungsi aggregrat sum dan klausa WHERE 
+
+MariaDB [dbpegawai]> SELECT SUM(CASE WHEN iddivisi = (SELECT id FROM divisi WHERE nama = 'SDM') THEN 1 ELSE 0 END) AS jumlah_peg
+awai_SDM FROM pegawai;
++--------------------+
+| jumlah_pegawai_SDM |
++--------------------+
+|                  5 |
++--------------------+
+1 row in set (0.001 sec)
+
+- No 42 = Tampilkan jumlah pegawai berdasarkan divisi masing2 menggunakan fungsi aggregrat count
+dan klausa group by
+
+MariaDB [dbpegawai]> SELECT iddivisi, COUNT(*) AS jumlah_pegawai
+ FROM pegawai GROUP BY iddivisi;
++----------+----------------+
+| iddivisi | jumlah_pegawai |
++----------+----------------+
+|        1 |              5 |
+|        2 |              5 |
+|        3 |              5 |
+|        4 |              3 |
++----------+----------------+
+4 rows in set (0.001 sec)
+
+- No 43 = Tampilkan data jumlah pegawai berdasarkan gender, yg jumlah minimal 10 orang (gunakan
+group by dan having)
+
+MariaDB [dbpegawai]> SELECT jenis_kelamin, COUNT(*) AS jumlah_pe
+gawai FROM pegawai;
++---------------+----------------+
+| jenis_kelamin | jumlah_pegawai |
++---------------+----------------+
+| Laki-laki     |             18 |
++---------------+----------------+
+1 row in set (0.001 sec)
+
+-  No 44 = Cari data pegawai yang berawalan kata Muhammad
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE nama LIKE 'Muhammad%';
++----+-------+----------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+| id | nip   | nama     | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat       | berat_badan | umur |
++----+-------+----------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+|  1 | 00001 | Muhammad | Laki-laki     | Surakarta | 1987-01-15 |        1 |         1 | Jl. Tegalega |       98.24 |   53 |
++----+-------+----------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+1 row in set (0.001 sec)
+
+- No 45 = Cari data pegawai yang berakhiran kata Santoso
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE nama LIKE 'Santoso%';
++----+-------+---------+---------------+-----------+------------+----------+-----------+-------------+-------------+------+
+| id | nip   | nama    | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat      | berat_badan | umur |
++----+-------+---------+---------------+-----------+------------+----------+-----------+-------------+-------------+------+
+| 67 | 00008 | Santoso | Laki-laki     | Solo      | 1988-11-17 |        2 |         3 | Jl. Anggrek |       56.27 |   43 |
++----+-------+---------+---------------+-----------+------------+----------+-----------+-------------+-------------+------+
+1 row in set (0.001 sec)
+
+ - No 46 = Cari data pegawai yang mengadung kata Asep 
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE nama LIKE 'Asep%';
++----+-------+------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+| id | nip   | nama | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat       | berat_badan | umur |
++----+-------+------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+| 70 | 00011 | Asep | Laki-laki     | Nagrek    | 1976-12-30 |        3 |         1 | Jl. Monalisa |       58.85 |   23 |
++----+-------+------+---------------+-----------+------------+----------+-----------+--------------+-------------+------+
+1 row in set (0.001 sec)
+
+- No 47 = Cari data pegawai yang huruf kelimanya huruf S
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE SUBSTRING(nama, 5, 1) = 'S';
++----+-------+-------+---------------+-----------+------------+----------+-----------+------------+-------------+------+
+| id | nip   | nama  | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat     | berat_badan | umur |
++----+-------+-------+---------------+-----------+------------+----------+-----------+------------+-------------+------+
+| 75 | 00016 | Haris | Laki-laki     | India     | 1897-04-12 |        4 |         1 | Jl. Cikeas |       74.89 |   22 |
++----+-------+-------+---------------+-----------+------------+----------+-----------+------------+-------------+------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai]>
